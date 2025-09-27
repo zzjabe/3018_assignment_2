@@ -26,3 +26,8 @@ export const updateBranch = (
     return branches[idx];
 }
 
+export const deleteBranch = (id: number): Branch | null => {
+    const idx = branches.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    return branches.splice(idx, 1)[0];
+}
