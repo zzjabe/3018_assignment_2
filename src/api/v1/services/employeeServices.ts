@@ -9,16 +9,19 @@ export const createEmployee = (data: Omit<Employee, "id">): Employee => {
 
     const newEmployee: Employee = {
         id: newId,
-        name: data.name,
-        position: data.position,
-        department: data.department,
-        email: data.email,
-        phone: data.phone,
-        branchId: data.branchId
-        
-     };
+        ...data     
+    };
     employees.push(newEmployee);
 
     return newEmployee;
 };
 
+export const updateEmployee = (
+    id: number,
+    patch: Partial<Employee>
+): Employee | null =>{
+    const idx = employees.findIndex(e => e.id === id);
+    if (idx === -1) return null;
+    employees[idx] = { ...employees[idx], ...patch };
+    return employees[idx];
+}
