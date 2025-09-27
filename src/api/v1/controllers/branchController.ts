@@ -29,3 +29,25 @@ export const createBranch = (req: Request, res: Response): void =>{
         });
     }
 };
+
+export const updateBranch = (req: Request, res: Response): void =>{
+    try {
+        const id = Number(req.params.id);
+        const updateData = req.body;
+        const updated = branchServices.updateBranch(id, updateData);
+        if (updated){
+            res.status(200).json({
+            message: "Branch updated",
+            data: updated,
+            });
+        } else {
+            res.status(404).json({
+                message: "Branch not found",
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating branch",
+        });
+    }
+};
