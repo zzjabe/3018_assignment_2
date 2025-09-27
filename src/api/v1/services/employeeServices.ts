@@ -25,3 +25,9 @@ export const updateEmployee = (
     employees[idx] = { ...employees[idx], ...patch };
     return employees[idx];
 }
+
+export const deleteEmployee = (id: number): Employee | null => {
+    const idx = employees.findIndex(e => e.id === id);
+    if (idx === -1) return null;
+    return employees.splice(idx, 1)[0];
+}
