@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import * as employeeServices from "../services/employeeServices"
 
-export const getAllEmployee = (req: Request, res: Response): void =>{
+export const getAllEmployees = (req: Request, res: Response): void =>{
     try {
-        const employees = employeeServices.getAllEmployees;
+        const employees = employeeServices.getAllEmployees();
         res.status(200).json({
         message: "Get all employees.",
         data: employees,
@@ -18,10 +18,10 @@ export const getAllEmployee = (req: Request, res: Response): void =>{
 export const createEmployee = (req: Request, res: Response): void =>{
     try {
         const newEmployee = req.body;
-        const createEmployee = employeeServices.createEmployee(newEmployee);
+        const created = employeeServices.createEmployee(newEmployee);
         res.status(200).json({
             message: "Employee added",
-            data: createEmployee,
+            data: created,
         });
     } catch(error) {
         res.status(500).json({
@@ -34,11 +34,11 @@ export const updateEmployee = (req: Request, res: Response): void =>{
     try {
         const id = Number(req.params.id);
         const updateData = req.body;
-        const updateEmployee = employeeServices.updateEmployee(id, updateData);
-        if (updateEmployee){
+        const updated = employeeServices.updateEmployee(id, updateData);
+        if (updated){
             res.status(200).json({
             message: "Employee updated",
-            data: updateEmployee,
+            data: updated,
             });
         } else {
             res.status(404).json({
@@ -55,10 +55,11 @@ export const updateEmployee = (req: Request, res: Response): void =>{
 export const deleteEmployee = (req: Request, res: Response): void =>{
     try{
         const id = Number(req.params.id);
-        const success = employeeServices.deleteEmployee(id);
-        if (success) {
+        const deleted = employeeServices.deleteEmployee(id);
+        if (deleted) {
             res.status(200).json({
                 message: "Employee deleted",
+                data: deleted,
             })
         } else {
             res.status(404).json({
