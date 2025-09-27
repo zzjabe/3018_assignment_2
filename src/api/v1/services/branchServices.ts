@@ -16,3 +16,13 @@ export const createBranch = (data: Omit<Branch, "id">): Branch => {
     return newBranch;
 };
 
+export const updateBranch = (
+    id: number,
+    patch: Partial<Branch>
+): Branch | null =>{
+    const idx = branches.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    branches[idx] = { ...branches[idx], ...patch };
+    return branches[idx];
+}
+
