@@ -52,3 +52,22 @@ export const updateEmployee = (req: Request, res: Response): void =>{
     }
 };
 
+export const deleteEmployee = (req: Request, res: Response): void =>{
+    try{
+        const id = Number(req.params.id);
+        const success = employeeServices.deleteEmployee(id);
+        if (success) {
+            res.status(200).json({
+                message: "Employee deleted",
+            })
+        } else {
+            res.status(404).json({
+                message: "Employee not found",
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting employee",
+        });
+    }
+}
