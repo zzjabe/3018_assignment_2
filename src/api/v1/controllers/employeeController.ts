@@ -71,4 +71,4 @@ export const deleteEmployee = (req: Request, res: Response): void =>{
             message: "Error deleting employee",
         });
     }
-}
+};
