@@ -53,3 +53,56 @@ describe("getAllEmployees endpoint", () => {
         });
     });
 });
+
+describe("GET /employees/:id - Get employee by ID", () => {
+
+    it("should return the employee object for a valid ID", async () => {
+        const res = await request(app).get(`/employees/15`);
+        expect(res.status).toBe(200);
+        expect(res.body.data).toBeDefined();
+        expect(res.body.data.id).toBe(15);
+        expect(res.body.data.name).toBe("Thomas Walker");
+        expect(res.body.data.position).toBe("Teller");
+        expect(res.body.data.department).toBe("Operations");
+        expect(res.body.data.email).toBe("thomas.walker@pixell-river.com");
+        expect(res.body.data.phone).toBe("506-555-0285");
+        expect(res.body.data.branchId).toBe(9);
+    });
+
+    it("should return 404 if employee with ID does not exist", async () => {
+        const res = await request(app).get("/employees/99");
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe("Employee not found");
+    });
+});
+
+describe("updateEmployee endpoint", () => {
+    it("should update employee data successfully", async () => {
+        const patch = {
+            id: 15,
+            position: "Developer",
+            phone: "666-666-6666"
+        };
+        const id = patch.id
+        const res = await request(app).put(`/employees/${id}`).send(patch);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.id).toBe(id);
+        expect(res.body.data.position).toBe(patch.position);
+        expect(res.body.data.phone).toBe(patch.phone);
+        expect(res.body.data.name).toBe("Thomas Walker");
+        expect(res.body.data.department).toBe("Operations");
+        expect(res.body.data.email).toBe("thomas.walker@pixell-river.com");
+        expect(res.body.data.branchId).toBe(9);
+    });
+
+    it("should return 404 if updating a non-existing employee", async () => {
+        const patch = { 
+            id: 99,
+            position: "Developer" 
+        };
+        const res = await request(app).put("/employees/99").send(patch);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe("Employee not found");
+    });
+});
