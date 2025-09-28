@@ -45,3 +45,43 @@ describe("getAllBranches endpoint", () => {
     });
 });
 
+describe("getBranch endpoint", () => {
+    it("should return the branch object for a valid id", async () => {
+        const res = await request(app).get("/branches/5");
+        expect(res.status).toBe(200);
+        expect(res.body.data).toBeDefined();
+        expect(res.body.data.id).toBe(5);
+        expect(res.body.data.name).toBe("Winnipeg Branch");
+        expect(res.body.data.address).toBe("1 Portage Ave, Winnipeg, MB, R3B 2B9");
+        expect(res.body.data.phone).toBe("204-988-2402");
+    });
+
+    it("should return 404 if branch with id does not exist", async () => {
+        const res = await request(app).get("/branches/99");
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe("Branch not found");
+    });
+});
+
+describe("updateBranch endpoint", () => {
+    it("should update branch data successfully", async () => {
+        const patch = {
+            id: 5,
+            phone: "666-666-6666"
+        };
+        const id = patch.id
+        const res = await request(app).put(`/branches/${id}`).send(patch);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.id).toBe(id);
+        expect(res.body.data.phone).toBe(patch.phone);
+        expect(res.body.data.name).toBe("Winnipeg Branch",);
+        expect(res.body.data.address).toBe("1 Portage Ave, Winnipeg, MB, R3B 2B9");
+    });
+
+    it("should return 404 if branch missing ID parameter", async () => {
+        const patch = { position: "Developer" };
+        const res = await request(app).put("/branches/").send(patch);
+        expect(res.status).toBe(404);
+    });
+});

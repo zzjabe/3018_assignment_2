@@ -56,8 +56,8 @@ describe("getAllEmployees endpoint", () => {
 
 describe("getEmployee endpoint", () => {
 
-    it("should return the employee object for a valid ID", async () => {
-        const res = await request(app).get(`/employees/15`);
+    it("should return the employee object for a valid id", async () => {
+        const res = await request(app).get("/employees/15");
         expect(res.status).toBe(200);
         expect(res.body.data).toBeDefined();
         expect(res.body.data.id).toBe(15);
