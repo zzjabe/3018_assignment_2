@@ -133,3 +133,20 @@ describe("getByBranch endpoint", () => {
         expect(res.body.message).toBe("Missing branchId query parameter");
     });
 });
+
+describe("getByDepartment endpoint", () => {
+    it("should return all the employees for that branch", async () => {
+        const res = await request(app).get("/employees/byDepartment?department=Loans");
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        res.body.data.forEach((e: any) => {
+            expect(e.department).toBe("Loans");
+        });
+    });
+
+    it("should return 400 if without department", async () => {
+        const res = await request(app).get("/employees/byDepartment/");
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe("Missing department query parameter");
+    });
+});

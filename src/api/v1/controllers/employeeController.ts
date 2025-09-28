@@ -129,8 +129,8 @@ export const getByBranch = (req: Request, res: Response): void =>{
 export const getByDepartment = (req: Request, res: Response): void =>{
     try{
         const department  = req.query.department;
-        if (!department  ) {
-            res.status(400).json({ message: "MMissing department query parameter" });
+        if (!department) {
+            res.status(400).json({ message: "Missing department query parameter" });
         }
         const dep = String(department);
         const employees = employeeServices.getByDepartment(dep);
