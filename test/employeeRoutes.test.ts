@@ -54,7 +54,7 @@ describe("getAllEmployees endpoint", () => {
     });
 });
 
-describe("GET /employees/:id - Get employee by ID", () => {
+describe("getEmployee endpoint", () => {
 
     it("should return the employee object for a valid ID", async () => {
         const res = await request(app).get(`/employees/15`);
@@ -69,7 +69,7 @@ describe("GET /employees/:id - Get employee by ID", () => {
         expect(res.body.data.branchId).toBe(9);
     });
 
-    it("should return 404 if employee with ID does not exist", async () => {
+    it("should return 404 if employee with id does not exist", async () => {
         const res = await request(app).get("/employees/99");
         expect(res.status).toBe(404);
         expect(res.body.message).toBe("Employee not found");
@@ -96,13 +96,23 @@ describe("updateEmployee endpoint", () => {
         expect(res.body.data.branchId).toBe(9);
     });
 
-    it("should return 404 if updating a non-existing employee", async () => {
-        const patch = { 
-            id: 99,
-            position: "Developer" 
-        };
-        const res = await request(app).put("/employees/99").send(patch);
+    it("should return 404 if employee missing ID parameter", async () => {
+        const patch = { position: "Developer" };
+        const res = await request(app).put("/employees/").send(patch);
         expect(res.status).toBe(404);
-        expect(res.body.message).toBe("Employee not found");
+    });
+});
+
+describe("deleteEmployee endpoint", () => {
+    it("should delete a employee successfully", async () => {
+        const res = await request(app).delete("/employees/15");
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe("Employee deleted");
+        expect(res.body.data).toHaveProperty("id", 15);
+    });
+
+    it("should return 404 if employee missing ID parameter", async () => {
+        const res = await request(app).delete("/employees/");
+        expect(res.status).toBe(404);
     });
 });

@@ -18,6 +18,9 @@ export const getAllEmployees = (req: Request, res: Response): void =>{
 export const getEmployee = (req: Request, res: Response): void =>{
     try{
         const id = Number(req.params.id);
+        if (!id ) {
+            res.status(400).json({ message: "Missing ID parameter" });
+        }
         const employee = employeeServices.getById(id);
         if (employee) {
             res.status(200).json({
