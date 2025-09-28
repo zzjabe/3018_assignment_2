@@ -38,8 +38,12 @@ export const getBranch = (req: Request, res: Response): void =>{
 
 export const createBranch = (req: Request, res: Response): void =>{
     try {
-        const newBranch = req.body;
-        const created = branchServices.createBranch(newBranch);
+        const { name, address, phone }  = req.body;
+        if (!name || !address || !phone ) {
+            res.status(400).json({ message: "Missing required fields" });
+            return;
+        }
+        const created = branchServices.createBranch(req.body);
         res.status(201).json({
             message: "Branch added",
             data: created,

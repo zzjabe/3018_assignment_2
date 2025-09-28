@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../src/app";
 
 describe("creatEmployee Endpoints", () => {
-    it("should call createEmployee controller", async () => {
+    it("should create an new employee successfully", async () => {
         const mockEmployee = {
             name: "Jianbin Zhang",
             position: "Developer",
