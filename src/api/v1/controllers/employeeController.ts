@@ -38,9 +38,13 @@ export const getEmployee = (req: Request, res: Response): void =>{
 
 export const createEmployee = (req: Request, res: Response): void =>{
     try {
-        const newEmployee = req.body;
-        const created = employeeServices.createEmployee(newEmployee);
-        res.status(200).json({
+        const { name, position, department, email, phone, branchId } = req.body;
+        if (!name || !position || !department || !email || !phone || !branchId) {
+            res.status(400).json({ message: "Missing required fields" });
+            return;
+        }
+        const created = employeeServices.createEmployee(req.body);
+        res.status(201).json({
             message: "Employee added",
             data: created,
         });

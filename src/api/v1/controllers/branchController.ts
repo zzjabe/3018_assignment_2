@@ -40,7 +40,7 @@ export const createBranch = (req: Request, res: Response): void =>{
     try {
         const newBranch = req.body;
         const created = branchServices.createBranch(newBranch);
-        res.status(200).json({
+        res.status(201).json({
             message: "Branch added",
             data: created,
         });
