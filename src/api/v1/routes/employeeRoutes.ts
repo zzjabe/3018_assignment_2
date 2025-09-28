@@ -4,6 +4,8 @@ import * as employeeController from "../controllers/employeeController"
 const router = Router();
 
 router.get("/", employeeController.getAllEmployees);
+router.get("/byBranch", employeeController.getByBranch);
+router.get("/byDepartment", employeeController.getByDepartment);
 router.get("/:id", employeeController.getEmployee);
 router.post("/", employeeController.createEmployee);
 router.put("/:id", employeeController.updateEmployee);

@@ -125,3 +125,28 @@ export const getByBranch = (req: Request, res: Response): void =>{
         });
     }
 };
+
+export const getByDepartment = (req: Request, res: Response): void =>{
+    try{
+        const department  = req.query.department;
+        if (!department  ) {
+            res.status(400).json({ message: "MMissing department query parameter" });
+        }
+        const dep = String(department);
+        const employees = employeeServices.getByDepartment(dep);
+        if (employees) {
+            res.status(200).json({
+                message: "Get all the employees by department",
+                data: employees,
+            });
+        } else {
+            res.status(404).json({
+                message: "Employee not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Error retriveving employee by department",
+        });
+    }
+};
