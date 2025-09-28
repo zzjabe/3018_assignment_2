@@ -85,3 +85,17 @@ describe("updateBranch endpoint", () => {
         expect(res.status).toBe(404);
     });
 });
+
+describe("deleteBranch endpoint", () => {
+    it("should delete a branch successfully", async () => {
+        const res = await request(app).delete("/branches/5");
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe("Branch deleted");
+        expect(res.body.data).toHaveProperty("id", 5);
+    });
+
+    it("should return 404 if branch missing ID parameter", async () => {
+        const res = await request(app).delete("/branches/");
+        expect(res.status).toBe(404);
+    });
+});
