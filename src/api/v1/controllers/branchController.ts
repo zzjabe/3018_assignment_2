@@ -15,6 +15,27 @@ export const getAllBranches = (req: Request, res: Response): void =>{
     }
 };
 
+export const getBranch = (req: Request, res: Response): void =>{
+    try{
+        const id = Number(req.params.id);
+        const branch = branchServices.getById(id);
+        if (branch) {
+            res.status(200).json({
+                message: "Get branch",
+                data: branch,
+            });
+        } else {
+            res.status(404).json({
+                message: "Branch not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Error retriveving branch",
+        });
+    }
+}
+
 export const createBranch = (req: Request, res: Response): void =>{
     try {
         const newBranch = req.body;
