@@ -100,3 +100,28 @@ export const deleteEmployee = (req: Request, res: Response): void =>{
         });
     }
 };
+
+export const getByBranch = (req: Request, res: Response): void =>{
+    try{
+        const branchIdRaw = req.query.branchId;
+        if (!branchIdRaw ) {
+            res.status(400).json({ message: "Missing branchId query parameter" });
+        }
+        const branchId = Number(branchIdRaw);
+        const employees = employeeServices.getByBranch(branchId);
+        if (employees) {
+            res.status(200).json({
+                message: "Get all the employees by branch",
+                data: employees,
+            });
+        } else {
+            res.status(404).json({
+                message: "Employee not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Error retriveving employee by branch",
+        });
+    }
+};
