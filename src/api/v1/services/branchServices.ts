@@ -4,6 +4,14 @@ export const getAllBranches = (): Branch[] => {
     return branches;
 };
 
+export const getById = (id: number): Branch | null =>{
+    const branch = branches.find(e => e.id === id);
+    if (!branch) {
+        return null;
+    }
+    return branch;
+};
+
 export const createBranch = (data: Omit<Branch, "id">): Branch => {
     const newId = branches.length + 1;
 

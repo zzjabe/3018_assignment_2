@@ -10,7 +10,7 @@ export const getById = (id: number): Employee | null =>{
         return null;
     }
     return employee;
-}
+};
 
 export const createEmployee = (data: Omit<Employee, "id">): Employee => {
     const newId = employees.length + 1;
