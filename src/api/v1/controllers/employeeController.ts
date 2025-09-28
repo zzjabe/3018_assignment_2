@@ -15,6 +15,27 @@ export const getAllEmployees = (req: Request, res: Response): void =>{
     }
 };
 
+export const getEmployee = (req: Request, res: Response): void =>{
+    try{
+        const id = Number(req.params.id);
+        const employee = employeeServices.getById(id);
+        if (employee) {
+            res.status(200).json({
+                message: "Get employee",
+                data: employee,
+            });
+        } else {
+            res.status(404).json({
+                message: "Employee not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Error retriveving employee",
+        });
+    }
+}
+
 export const createEmployee = (req: Request, res: Response): void =>{
     try {
         const newEmployee = req.body;
