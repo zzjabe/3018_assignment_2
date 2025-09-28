@@ -43,3 +43,8 @@ export const deleteEmployee = (id: number): Employee | null => {
 export const getByBranch = (branchId: number): Employee[] =>{
     return employees.filter(e => e.branchId === branchId);
 };
+
+export const getByDepartment = (department: string): Employee[] => {
+  const dep = department.toLowerCase();
+  return employees.filter(e => String(e.department).toLowerCase() === dep);
+};
