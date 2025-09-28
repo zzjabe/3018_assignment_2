@@ -11,7 +11,7 @@ export const getAllEmployees = (req: Request, res: Response): void =>{
     } catch (error) {
         res.status(500).json({
             message: "Error retriveving employees",
-        })
+        });
     }
 };
 
@@ -43,7 +43,7 @@ export const updateEmployee = (req: Request, res: Response): void =>{
         } else {
             res.status(404).json({
                 message: "Employee not found",
-            })
+            });
         }
     } catch (error) {
         res.status(500).json({
@@ -60,7 +60,7 @@ export const deleteEmployee = (req: Request, res: Response): void =>{
             res.status(200).json({
                 message: "Employee deleted",
                 data: deleted,
-            })
+            });
         } else {
             res.status(404).json({
                 message: "Employee not found",

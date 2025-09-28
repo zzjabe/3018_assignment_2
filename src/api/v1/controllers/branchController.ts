@@ -11,7 +11,7 @@ export const getAllBranches = (req: Request, res: Response): void =>{
     } catch (error) {
         res.status(500).json({
             message: "Error retriveving branches",
-        })
+        });
     }
 };
 
@@ -43,7 +43,7 @@ export const updateBranch = (req: Request, res: Response): void =>{
         } else {
             res.status(404).json({
                 message: "Branch not found",
-            })
+            });
         }
     } catch (error) {
         res.status(500).json({
@@ -60,7 +60,7 @@ export const deleteBranch = (req: Request, res: Response): void =>{
             res.status(200).json({
                 message: "Branch deleted",
                 data: deleted,
-            })
+            });
         } else {
             res.status(404).json({
                 message: "Branch not found",

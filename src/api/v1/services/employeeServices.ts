@@ -4,6 +4,14 @@ export const getAllEmployees = (): Employee[] => {
     return employees;
 };
 
+export const getById = (id: number): Employee | null =>{
+    const employee = employees.find(e => e.id === id);
+    if (!employee) {
+        return null;
+    }
+    return employee;
+}
+
 export const createEmployee = (data: Omit<Employee, "id">): Employee => {
     const newId = employees.length + 1;
 
