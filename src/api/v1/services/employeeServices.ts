@@ -38,4 +38,8 @@ export const deleteEmployee = (id: number): Employee | null => {
     const idx = employees.findIndex(e => e.id === id);
     if (idx === -1) return null;
     return employees.splice(idx, 1)[0];
-}
+};
+
+export const getByBranch = (branchId: number): Employee[] =>{
+    return employees.filter(e => e.branchId === branchId);
+};
