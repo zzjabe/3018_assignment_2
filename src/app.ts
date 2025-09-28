@@ -2,6 +2,8 @@ import express, { Express, Request, Response } from "express";
 // Importing morgan
 import morgan from "morgan";
 import routes from "./api/v1/routes/routes";
+import employeeRoutes from "./api/v1/routes/employeeRoutes"
+import branchRoutes from "./api/v1/routes/branchRoutes"
 
 // Initialize Express application
 const app: Express = express();
@@ -14,6 +16,10 @@ app.use(morgan("combined"));
 
 // Mount routes
 app.use("/api/v1/routes", routes);
+
+app.use("/employees", employeeRoutes);
+
+app.use("/branches", branchRoutes);
 
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {
