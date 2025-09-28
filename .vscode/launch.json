@@ -7,19 +7,9 @@
             "name": "Debug Server",
             "runtimeArgs": ["-r", "ts-node/register"],
             "program": "${workspaceFolder}/src/server.ts",
-            "console": "integratedTerminal"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug Jest Tests",
-            "runtimeExecutable": "node",
-            "args": [
-                "${workspaceFolder}/node_modules/jest/bin/jest.js",
-                "--runInBand"
-            ],
+            "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
-            "runtimeArgs": ["-r", "ts-node/register"]
+            "outFiles": ["${workspaceFolder}/**/*.ts"]
         }
     ]
 }
