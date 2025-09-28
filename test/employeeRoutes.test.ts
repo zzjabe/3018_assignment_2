@@ -135,7 +135,7 @@ describe("getByBranch endpoint", () => {
 });
 
 describe("getByDepartment endpoint", () => {
-    it("should return all the employees for that branch", async () => {
+    it("should return all the employees for that department", async () => {
         const res = await request(app).get("/employees/byDepartment?department=Loans");
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.data)).toBe(true);
