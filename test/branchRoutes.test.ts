@@ -25,3 +25,23 @@ describe("creatBranch Endpoints", () => {
     });
 });
 
+describe("getAllBranches endpoint", () => {
+    it("should return an array of all branches", async () => {
+        const res = await request(app).get("/branches");
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.data)).toBe(true);
+    });
+
+    it("should ensure each branch has required fields", async () => {
+        const res = await request(app).get("/branches");
+        expect(res.status).toBe(200);
+
+        res.body.data.forEach((branch: any) => {
+        expect(branch).toHaveProperty("id");
+        expect(branch).toHaveProperty("name");
+        expect(branch).toHaveProperty("address");
+        expect(branch).toHaveProperty("phone");
+        });
+    });
+});
+
