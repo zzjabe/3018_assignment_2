@@ -13,7 +13,8 @@ export const getById = (id: number): Branch | null =>{
 };
 
 export const createBranch = (data: Omit<Branch, "id">): Branch => {
-    const newId = branches.length + 1;
+    const maxId = branches.length === 0 ? 0 : Math.max(...branches.map(e => e.id));
+    const newId = maxId + 1;
 
     const newBranch: Branch = {
         id: newId,

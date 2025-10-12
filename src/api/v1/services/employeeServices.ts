@@ -13,7 +13,8 @@ export const getById = (id: number): Employee | null =>{
 };
 
 export const createEmployee = (data: Omit<Employee, "id">): Employee => {
-    const newId = employees.length + 1;
+    const maxId = employees.length === 0 ? 0 : Math.max(...employees.map(e => e.id));
+    const newId = maxId + 1;
 
     const newEmployee: Employee = {
         id: newId,
