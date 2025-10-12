@@ -1,20 +1,26 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import * as employeeServices from "../services/employeeServices"
 import { Employee } from "../models/employeeModel"
 import { successResponse } from "../models/responseModel";
 
-export const getAllEmployees = async (req: Request, res: Response) =>{
+export const getAllEmployees = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try {
         const employees: Employee[] = await employeeServices.getAllEmployees();
         res.status(200).json(successResponse(employees));
     } catch (error) {
-        res.status(500).json({
-            message: "Error retriveving employees",
-        });
+        next(error);
     }
 };
 
-export const getEmployee = async (req: Request, res: Response) =>{
+export const getEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const id = Number(req.params.id);
         if (!id ) {
@@ -29,24 +35,28 @@ export const getEmployee = async (req: Request, res: Response) =>{
             });
         }
     } catch (error) {
-        res.status(500).json({
-            message: "Error retrieving employee",
-        });
+        next(error);
     }
 }
 
-export const createEmployee = async (req: Request, res: Response) =>{
+export const createEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try {
         const created: Employee = await employeeServices.createEmployee(req.body);
         res.status(201).json(successResponse(created));
     } catch(error) {
-        res.status(500).json({
-            message: "Error creating employee",
-        });
+        next(error);
     }
 };
 
-export const updateEmployee = async (req: Request, res: Response) =>{
+export const updateEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try {
         const id = Number(req.params.id);
         const updateData = req.body;
@@ -65,7 +75,11 @@ export const updateEmployee = async (req: Request, res: Response) =>{
     }
 };
 
-export const deleteEmployee = async (req: Request, res: Response) =>{
+export const deleteEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const id = Number(req.params.id);
         const deleted: Employee | null = await employeeServices.deleteEmployee(id);
@@ -83,7 +97,11 @@ export const deleteEmployee = async (req: Request, res: Response) =>{
     }
 };
 
-export const getByBranch = async (req: Request, res: Response) =>{
+export const getByBranch = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const branchIdRaw = req.query.branchId;
         if (!branchIdRaw ) {
@@ -105,7 +123,11 @@ export const getByBranch = async (req: Request, res: Response) =>{
     }
 };
 
-export const getByDepartment = async (req: Request, res: Response) =>{
+export const getByDepartment = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const department  = req.query.department;
         if (!department) {
