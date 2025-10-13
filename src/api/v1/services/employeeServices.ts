@@ -1,28 +1,74 @@
-import { Employee, employees } from "../../../data/employees";
+import {
+    QuerySnapshot,
+    DocumentData,
+    DocumentSnapshot,
+} from "firebase-admin/firestore";
+import { Employee } from "../models/employeeModel"
+import * as firestoreRepository from "../repositories/firestoreRepository";
 
-export const getAllEmployees = (): Employee[] => {
-    return employees;
-};
+const COLLECTION: string = "employees";
 
-export const getById = (id: number): Employee | null =>{
-    const employee = employees.find(e => e.id === id);
-    if (!employee) {
-        return null;
+export const getAllEmployees = async (): Promise<Employee[]> => {
+    try{
+        const snapshot: QuerySnapshot = 
+        await firestoreRepository.getDocuments(COLLECTION);
+        const employees: Employee[] = snapshot.docs.map((doc) => {
+            const data: DocumentData = doc.data();
+            return {
+                id: Number(doc.id),
+                ...data
+            } as Employee;
+        });
+        return employees;
+    } catch (error: unknown) {
+        throw error;
     }
-    return employee;
 };
 
-export const createEmployee = (data: Omit<Employee, "id">): Employee => {
-    const maxId = employees.length === 0 ? 0 : Math.max(...employees.map(e => e.id));
-    const newId = maxId + 1;
+export const getById = async (id: number): Promise<Employee> =>{
+    try{
+    const doc: DocumentSnapshot | null = await firestoreRepository.getDocumentById(
+        COLLECTION,
+        id.toString()
+    );
 
-    const newEmployee: Employee = {
+    if (!doc) {
+        throw new Error(`Employee with ID ${id} not found`);
+    }
+
+    const data: DocumentData | undefined = doc.data();
+    const employee: Employee = {
+        id: Number(doc.id),
+        ...data,
+    } as Employee;
+
+        return structuredClone(employee);
+    } catch (error: unknown) {
+        throw error;
+    }
+};
+
+export const createEmployee = async (
+    employeeData: Omit<Employee, "id">
+): Promise<Employee> => {
+    try{
+        const snapshot = await firestoreRepository.getDocuments(COLLECTION);
+        const employees = snapshot.docs.map(doc => doc.data() as Employee);
+        const maxId = employees.length === 0 ? 0 : Math.max(...employees.map(e => e.id));
+        const newId = maxId + 1;
+
+        const newEmployee: Employee = {
         id: newId,
-        ...data     
-    };
-    employees.push(newEmployee);
+        ...employeeData,     
+        };
 
-    return newEmployee;
+        await firestoreRepository.setDocument(COLLECTION, String(newId), newEmployee);
+
+        return newEmployee;
+    } catch (error) {
+    console.error("Error creating employee:", error);
+    throw error;
+    };
 };
 
 export const updateEmployee = (

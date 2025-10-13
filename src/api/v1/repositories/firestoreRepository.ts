@@ -1,5 +1,5 @@
 import { db } from "../config/firebaseConfig";
-import { FieldValue, Timestamp } from "firebase-admin/firestore";
+import { FieldValue, Timestamp, getFirestore } from "firebase-admin/firestore";
 
 type FirestoreDataTypes =
     | string
@@ -190,4 +190,9 @@ export const deleteDocumentsByFieldValues = async (
             `Failed to delete documents from ${collectionName} where ${fieldValueString}: ${errorMessage}`
         );
     }
+};
+
+export const setDocument = async (collection: string, id: string, data: any) => {
+  const db = getFirestore();
+  await db.collection(collection).doc(id).set(data);
 };
