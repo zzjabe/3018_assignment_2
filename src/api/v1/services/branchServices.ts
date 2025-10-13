@@ -1,42 +1,99 @@
-import { Branch, branches } from "../../../data/branches";
+import {
+    QuerySnapshot,
+    DocumentData,
+    DocumentSnapshot,
+} from "firebase-admin/firestore";
+import { Branch } from "../models/branchModel"
+import * as firestoreRepository from "../repositories/firestoreRepository";
 
-export const getAllBranches = (): Branch[] => {
-    return branches;
-};
+const COLLECTION: string = "branches";
 
-export const getById = (id: number): Branch | null =>{
-    const branch = branches.find(e => e.id === id);
-    if (!branch) {
-        return null;
+export const getAllBranches = async (): Promise<Branch[]> => {
+    try{
+        const snapshot: QuerySnapshot = 
+        await firestoreRepository.getDocuments(COLLECTION);
+        const branches: Branch[] = snapshot.docs.map((doc) => {
+            const data: DocumentData = doc.data();
+            return {
+                id: Number(doc.id),
+                ...data
+            } as Branch;
+        });
+        return branches;
+    } catch (error: unknown) {
+        throw error;
     }
-    return branch;
 };
 
-export const createBranch = (data: Omit<Branch, "id">): Branch => {
-    const maxId = branches.length === 0 ? 0 : Math.max(...branches.map(e => e.id));
-    const newId = maxId + 1;
+export const getById = async (id: number): Promise<Branch> =>{
+    try{
+    const doc: DocumentSnapshot | null = await firestoreRepository.getDocumentById(
+        COLLECTION,
+        id.toString()
+    );
 
-    const newBranch: Branch = {
+    if (!doc) {
+        throw new Error(`Branch with ID ${id} not found`);
+    }
+
+    const data: DocumentData | undefined = doc.data();
+    const branch: Branch = {
+        id: Number(doc.id),
+        ...data,
+    } as Branch;
+
+        return structuredClone(branch);
+    } catch (error: unknown) {
+        throw error;
+    }
+};
+
+export const createBranch = async (
+    branchData: Omit<Branch, "id">
+): Promise<Branch> => {
+    try{
+        const snapshot = await firestoreRepository.getDocuments(COLLECTION);
+        const branches = snapshot.docs.map(doc => doc.data() as Branch);
+        const maxId = branches.length === 0 ? 0 : Math.max(...branches.map(e => e.id));
+        const newId = maxId + 1;
+
+        const newBranch: Branch = {
         id: newId,
-        ...data     
-    };
-    branches.push(newBranch);
+        ...branchData,     
+        };
 
-    return newBranch;
+        await firestoreRepository.setDocument(COLLECTION, String(newId), newBranch);
+
+        return newBranch;
+    } catch (error) {
+    throw error;
+    };
 };
 
-export const updateBranch = (
-    id: number,
-    patch: Partial<Branch>
-): Branch | null =>{
-    const idx = branches.findIndex(b => b.id === id);
-    if (idx === -1) return null;
-    branches[idx] = { ...branches[idx], ...patch };
-    return branches[idx];
-}
+export const updateBranch = async (id: number, branchData: Branch): Promise<Branch> =>{
+    try{
+        const branch = await getById(id);
+        const updatedBranch: Branch = { ...branch, ...branchData };
 
-export const deleteBranch = (id: number): Branch | null => {
-    const idx = branches.findIndex(b => b.id === id);
-    if (idx === -1) return null;
-    return branches.splice(idx, 1)[0];
-}
+        await firestoreRepository.updateDocument(COLLECTION, id.toString(), updatedBranch);
+        return updatedBranch;
+    } catch (error: unknown) {
+        throw error;
+    };
+};
+
+export const deleteBranch = async (id: number): Promise<Branch> => {
+    try{
+        const branch: Branch = await getById(id);
+
+        if (!branch) {
+            throw new Error(`Branch with ID ${id} not found`);
+        }
+
+        await firestoreRepository.deleteDocument(COLLECTION, id.toString());
+
+        return branch;
+    } catch (error: unknown) {
+        throw error;
+    };
+};

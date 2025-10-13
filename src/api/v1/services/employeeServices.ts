@@ -1,51 +1,145 @@
-import { Employee, employees } from "../../../data/employees";
+import {
+    QuerySnapshot,
+    DocumentData,
+    DocumentSnapshot,
+} from "firebase-admin/firestore";
+import { Employee } from "../models/employeeModel"
+import * as firestoreRepository from "../repositories/firestoreRepository";
 
-export const getAllEmployees = (): Employee[] => {
-    return employees;
-};
+const COLLECTION: string = "employees";
 
-export const getById = (id: number): Employee | null =>{
-    const employee = employees.find(e => e.id === id);
-    if (!employee) {
-        return null;
-    }
-    return employee;
-};
-
-export const createEmployee = (data: Omit<Employee, "id">): Employee => {
-    const maxId = employees.length === 0 ? 0 : Math.max(...employees.map(e => e.id));
-    const newId = maxId + 1;
-
-    const newEmployee: Employee = {
-        id: newId,
-        ...data     
+export const getAllEmployees = async (): Promise<Employee[]> => {
+    try{
+        const snapshot: QuerySnapshot = 
+        await firestoreRepository.getDocuments(COLLECTION);
+        const employees: Employee[] = snapshot.docs.map((doc) => {
+            const data: DocumentData = doc.data();
+            return {
+                id: Number(doc.id),
+                ...data
+            } as Employee;
+        });
+        return employees;
+    } catch (error: unknown) {
+        throw error;
     };
-    employees.push(newEmployee);
-
-    return newEmployee;
 };
 
-export const updateEmployee = (
-    id: number,
-    patch: Partial<Employee>
-): Employee | null =>{
-    const idx = employees.findIndex(e => e.id === id);
-    if (idx === -1) return null;
-    employees[idx] = { ...employees[idx], ...patch };
-    return employees[idx];
-}
+export const getById = async (id: number): Promise<Employee> =>{
+    try{
+    const doc: DocumentSnapshot | null = await firestoreRepository.getDocumentById(
+        COLLECTION,
+        id.toString()
+    );
 
-export const deleteEmployee = (id: number): Employee | null => {
-    const idx = employees.findIndex(e => e.id === id);
-    if (idx === -1) return null;
-    return employees.splice(idx, 1)[0];
+    if (!doc) {
+        throw new Error(`Employee with ID ${id} not found`);
+    }
+
+    const data: DocumentData | undefined = doc.data();
+    const employee: Employee = {
+        id: Number(doc.id),
+        ...data,
+    } as Employee;
+
+        return structuredClone(employee);
+    } catch (error: unknown) {
+        throw error;
+    };
 };
 
-export const getByBranch = (branchId: number): Employee[] =>{
-    return employees.filter(e => e.branchId === branchId);
+export const createEmployee = async (
+    employeeData: Omit<Employee, "id">
+): Promise<Employee> => {
+    try{
+        const snapshot = await firestoreRepository.getDocuments(COLLECTION);
+        const employees = snapshot.docs.map(doc => doc.data() as Employee);
+        const maxId = employees.length === 0 ? 0 : Math.max(...employees.map(e => e.id));
+        const newId = maxId + 1;
+
+        const newEmployee: Employee = {
+        id: newId,
+        ...employeeData,     
+        };
+
+        await firestoreRepository.setDocument(COLLECTION, String(newId), newEmployee);
+
+        return newEmployee;
+    } catch (error) {
+    throw error;
+    };
 };
 
-export const getByDepartment = (department: string): Employee[] => {
-  const dep = department.toLowerCase();
-  return employees.filter(e => String(e.department).toLowerCase() === dep);
+export const updateEmployee = async (id: number, employeeData: Employee): Promise<Employee> =>{
+    try{
+        const employee = await getById(id);
+        const updatedEmployee: Employee = { ...employee, ...employeeData };
+
+        await firestoreRepository.updateDocument(COLLECTION, id.toString(), updatedEmployee);
+        return updatedEmployee;
+    } catch (error: unknown) {
+        throw error;
+    };
+};
+
+export const deleteEmployee = async (id: number): Promise<Employee> => {
+    try{
+        const employee: Employee = await getById(id);
+
+        if (!employee) {
+            throw new Error(`Employee with ID ${id} not found`);
+        }
+
+        await firestoreRepository.deleteDocument(COLLECTION, id.toString());
+
+        return employee;
+    } catch (error: unknown) {
+        throw error;
+    };
+};
+
+export const getByBranch = async (branchId: number): Promise<Employee[]> => {
+    try {
+        const snapshot = await firestoreRepository.getDocumentsByField(
+        COLLECTION,
+        "branchId",
+        "==",
+        branchId
+        );
+
+        const employees: Employee[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            id: Number(doc.id),
+            ...data,
+        } as Employee;
+        });
+
+        return employees;
+    } catch (error: unknown) {
+        throw error;
+    };
+};
+
+export const getByDepartment = async (department: string): Promise<Employee[]> => {
+    try{
+        const snapshot = await firestoreRepository.getDocumentsByField(
+        COLLECTION,
+        "department",
+        "==",
+        department
+        );
+
+        const employees: Employee[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            id: Number(doc.id),
+            ...data,
+        } as Employee;
+        });
+
+        return employees;
+    } catch (error: unknown) {
+        throw error;
+    };
 };

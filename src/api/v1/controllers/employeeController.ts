@@ -1,73 +1,68 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import * as employeeServices from "../services/employeeServices"
+import { Employee } from "../models/employeeModel"
+import { successResponse } from "../models/responseModel";
 
-export const getAllEmployees = (req: Request, res: Response): void =>{
+export const getAllEmployees = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try {
-        const employees = employeeServices.getAllEmployees();
-        res.status(200).json({
-        message: "Get all employees.",
-        data: employees,
-        });
+        const employees: Employee[] = await employeeServices.getAllEmployees();
+        res.status(200).json(successResponse(employees));
     } catch (error) {
-        res.status(500).json({
-            message: "Error retriveving employees",
-        });
+        next(error);
     }
 };
 
-export const getEmployee = (req: Request, res: Response): void =>{
+export const getEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const id = Number(req.params.id);
         if (!id ) {
             res.status(400).json({ message: "Missing ID parameter" });
         }
-        const employee = employeeServices.getById(id);
+        const employee: Employee | null = await employeeServices.getById(id);
         if (employee) {
-            res.status(200).json({
-                message: "Get employee",
-                data: employee,
-            });
+            res.status(200).json(successResponse(employee));
         } else {
             res.status(404).json({
                 message: "Employee not found"
             });
         }
     } catch (error) {
-        res.status(500).json({
-            message: "Error retriveving employee",
-        });
+        next(error);
     }
 }
 
-export const createEmployee = (req: Request, res: Response): void =>{
+export const createEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try {
-        const { name, position, department, email, phone, branchId } = req.body;
-        if (!name || !position || !department || !email || !phone || !branchId) {
-            res.status(400).json({ message: "Missing required fields" });
-            return;
-        }
-        const created = employeeServices.createEmployee(req.body);
-        res.status(201).json({
-            message: "Employee added",
-            data: created,
-        });
+        const created: Employee = await employeeServices.createEmployee(req.body);
+        res.status(201).json(successResponse(created));
     } catch(error) {
-        res.status(500).json({
-            message: "Error cteating employee",
-        });
+        next(error);
     }
 };
 
-export const updateEmployee = (req: Request, res: Response): void =>{
+export const updateEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try {
         const id = Number(req.params.id);
         const updateData = req.body;
-        const updated = employeeServices.updateEmployee(id, updateData);
+        const updated: Employee | null = await employeeServices.updateEmployee(id, updateData);
         if (updated){
-            res.status(200).json({
-            message: "Employee updated",
-            data: updated,
-            });
+            res.status(200).json(successResponse(updated));
         } else {
             res.status(404).json({
                 message: "Employee not found",
@@ -80,15 +75,16 @@ export const updateEmployee = (req: Request, res: Response): void =>{
     }
 };
 
-export const deleteEmployee = (req: Request, res: Response): void =>{
+export const deleteEmployee = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const id = Number(req.params.id);
-        const deleted = employeeServices.deleteEmployee(id);
+        const deleted: Employee | null = await employeeServices.deleteEmployee(id);
         if (deleted) {
-            res.status(200).json({
-                message: "Employee deleted",
-                data: deleted,
-            });
+            res.status(200).json(successResponse(deleted));
         } else {
             res.status(404).json({
                 message: "Employee not found",
@@ -101,19 +97,20 @@ export const deleteEmployee = (req: Request, res: Response): void =>{
     }
 };
 
-export const getByBranch = (req: Request, res: Response): void =>{
+export const getByBranch = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const branchIdRaw = req.query.branchId;
         if (!branchIdRaw ) {
             res.status(400).json({ message: "Missing branchId query parameter" });
         }
         const branchId = Number(branchIdRaw);
-        const employees = employeeServices.getByBranch(branchId);
+        const employees: Employee[] = await employeeServices.getByBranch(branchId);
         if (employees) {
-            res.status(200).json({
-                message: "Get all the employees by branch",
-                data: employees,
-            });
+            res.status(200).json(successResponse(employees));
         } else {
             res.status(404).json({
                 message: "Employee not found"
@@ -126,19 +123,20 @@ export const getByBranch = (req: Request, res: Response): void =>{
     }
 };
 
-export const getByDepartment = (req: Request, res: Response): void =>{
+export const getByDepartment = async (
+    req: Request, 
+    res: Response,
+    next: NextFunction
+) =>{
     try{
         const department  = req.query.department;
         if (!department) {
             res.status(400).json({ message: "Missing department query parameter" });
         }
         const dep = String(department);
-        const employees = employeeServices.getByDepartment(dep);
+        const employees: Employee[] = await employeeServices.getByDepartment(dep);
         if (employees) {
-            res.status(200).json({
-                message: "Get all the employees by department",
-                data: employees,
-            });
+            res.status(200).json(successResponse(employees));
         } else {
             res.status(404).json({
                 message: "Employee not found"
