@@ -1,4 +1,4 @@
-import { db } from "../config/firebaseConfig";
+import { db } from "../../../../config/firebaseConfig";
 import { FieldValue, Timestamp, getFirestore } from "firebase-admin/firestore";
 
 type FirestoreDataTypes =

@@ -22,7 +22,7 @@ export const getAllEmployees = async (): Promise<Employee[]> => {
         return employees;
     } catch (error: unknown) {
         throw error;
-    }
+    };
 };
 
 export const getById = async (id: number): Promise<Employee> =>{
@@ -45,7 +45,7 @@ export const getById = async (id: number): Promise<Employee> =>{
         return structuredClone(employee);
     } catch (error: unknown) {
         throw error;
-    }
+    };
 };
 
 export const createEmployee = async (
@@ -66,7 +66,6 @@ export const createEmployee = async (
 
         return newEmployee;
     } catch (error) {
-    console.error("Error creating employee:", error);
     throw error;
     };
 };
@@ -80,8 +79,8 @@ export const updateEmployee = async (id: number, employeeData: Employee): Promis
         return updatedEmployee;
     } catch (error: unknown) {
         throw error;
-    }
-}
+    };
+};
 
 export const deleteEmployee = async (id: number): Promise<Employee> => {
     try{
@@ -96,7 +95,7 @@ export const deleteEmployee = async (id: number): Promise<Employee> => {
         return employee;
     } catch (error: unknown) {
         throw error;
-    }
+    };
 };
 
 export const getByBranch = async (branchId: number): Promise<Employee[]> => {
@@ -119,7 +118,7 @@ export const getByBranch = async (branchId: number): Promise<Employee[]> => {
         return employees;
     } catch (error: unknown) {
         throw error;
-    }
+    };
 };
 
 export const getByDepartment = async (department: string): Promise<Employee[]> => {
@@ -142,5 +141,5 @@ export const getByDepartment = async (department: string): Promise<Employee[]> =
         return employees;
     } catch (error: unknown) {
         throw error;
-    }
+    };
 };
