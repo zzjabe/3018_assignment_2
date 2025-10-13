@@ -193,6 +193,20 @@ export const deleteDocumentsByFieldValues = async (
 };
 
 export const setDocument = async (collection: string, id: string, data: any) => {
-  const db = getFirestore();
-  await db.collection(collection).doc(id).set(data);
+    const db = getFirestore();
+    await db.collection(collection).doc(id).set(data);
+};
+
+export const getDocumentsByField = async (
+    collection: string,
+    field: string,
+    operator: FirebaseFirestore.WhereFilterOp,
+    value: any
+) => {
+    const db = getFirestore();
+    const snapshot = await db.collection(collection)
+        .where(field, operator, value)
+        .get();
+
+    return snapshot;
 };

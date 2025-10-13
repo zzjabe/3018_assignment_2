@@ -5,6 +5,7 @@ import {
 } from "firebase-admin/firestore";
 import { Employee } from "../models/employeeModel"
 import * as firestoreRepository from "../repositories/firestoreRepository";
+import { getEmployee } from "../controllers/employeeController";
 
 const COLLECTION: string = "employees";
 
@@ -71,23 +72,33 @@ export const createEmployee = async (
     };
 };
 
-export const updateEmployee = (
-    id: number,
-    patch: Partial<Employee>
-): Employee | null =>{
-    const idx = employees.findIndex(e => e.id === id);
-    if (idx === -1) return null;
-    employees[idx] = { ...employees[idx], ...patch };
-    return employees[idx];
+export const updateEmployee = async (employeeData: Employee): Promise<void> =>{
+    try{
+        await firestoreRepository.updateDocument(
+            COLLECTION,
+            employeeData.id.toString(),
+            employeeData
+        );
+    } catch (error: unknown) {
+        throw error;
+    }
 }
 
-export const deleteEmployee = (id: number): Employee | null => {
-    const idx = employees.findIndex(e => e.id === id);
-    if (idx === -1) return null;
-    return employees.splice(idx, 1)[0];
+export const deleteEmployee = async (id: number): Promise<void> => {
+    try{
+        const employee: Employee = await getById(id);
+
+        if (!employee) {
+            throw new Error(`Employee with ID ${id} not found`);
+        }
+
+        await firestoreRepository.deleteDocument(COLLECTION, id.toString());
+    } catch (error: unknown) {
+        throw error;
+    }
 };
 
-export const getByBranch = (branchId: number): Employee[] =>{
+export const getByBranch = async (branchId: number): Promise<Employee> =>{
     return employees.filter(e => e.branchId === branchId);
 };
 
