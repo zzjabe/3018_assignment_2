@@ -71,19 +71,19 @@ export const createEmployee = async (
     };
 };
 
-export const updateEmployee = async (employeeData: Employee): Promise<void> =>{
+export const updateEmployee = async (id: number, employeeData: Employee): Promise<Employee> =>{
     try{
-        await firestoreRepository.updateDocument(
-            COLLECTION,
-            employeeData.id.toString(),
-            employeeData
-        );
+        const employee = await getById(id);
+        const updatedEmployee: Employee = { ...employee, ...employeeData };
+
+        await firestoreRepository.updateDocument(COLLECTION, id.toString(), updatedEmployee);
+        return updatedEmployee;
     } catch (error: unknown) {
         throw error;
     }
 }
 
-export const deleteEmployee = async (id: number): Promise<void> => {
+export const deleteEmployee = async (id: number): Promise<Employee> => {
     try{
         const employee: Employee = await getById(id);
 
@@ -92,6 +92,8 @@ export const deleteEmployee = async (id: number): Promise<void> => {
         }
 
         await firestoreRepository.deleteDocument(COLLECTION, id.toString());
+
+        return employee;
     } catch (error: unknown) {
         throw error;
     }
