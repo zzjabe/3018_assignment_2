@@ -8,7 +8,7 @@ import * as firestoreRepository from "../repositories/firestoreRepository";
 
 const COLLECTION: string = "branches";
 
-export const getAllBranch = async (): Promise<Branch[]> => {
+export const getAllBranches = async (): Promise<Branch[]> => {
     try{
         const snapshot: QuerySnapshot = 
         await firestoreRepository.getDocuments(COLLECTION);
