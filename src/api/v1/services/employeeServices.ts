@@ -5,7 +5,6 @@ import {
 } from "firebase-admin/firestore";
 import { Employee } from "../models/employeeModel"
 import * as firestoreRepository from "../repositories/firestoreRepository";
-import { getEmployee } from "../controllers/employeeController";
 
 const COLLECTION: string = "employees";
 
@@ -98,11 +97,48 @@ export const deleteEmployee = async (id: number): Promise<void> => {
     }
 };
 
-export const getByBranch = async (branchId: number): Promise<Employee> =>{
-    return employees.filter(e => e.branchId === branchId);
+export const getByBranch = async (branchId: number): Promise<Employee[]> => {
+    try {
+        const snapshot = await firestoreRepository.getDocumentsByField(
+        COLLECTION,
+        "branchId",
+        "==",
+        branchId
+        );
+
+        const employees: Employee[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            id: Number(doc.id),
+            ...data,
+        } as Employee;
+        });
+
+        return employees;
+    } catch (error: unknown) {
+        throw error;
+    }
 };
 
-export const getByDepartment = (department: string): Employee[] => {
-  const dep = department.toLowerCase();
-  return employees.filter(e => String(e.department).toLowerCase() === dep);
+export const getByDepartment = async (department: string): Promise<Employee[]> => {
+    try{
+        const snapshot = await firestoreRepository.getDocumentsByField(
+        COLLECTION,
+        "department",
+        "==",
+        department
+        );
+
+        const employees: Employee[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            id: Number(doc.id),
+            ...data,
+        } as Employee;
+        });
+
+        return employees;
+    } catch (error: unknown) {
+        throw error;
+    }
 };
