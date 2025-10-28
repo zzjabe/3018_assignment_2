@@ -9,9 +9,13 @@ import morgan from "morgan";
 import routes from "./api/v1/routes/routes";
 import employeeRoutes from "./api/v1/routes/employeeRoutes"
 import branchRoutes from "./api/v1/routes/branchRoutes"
+import getHelmetConfig from "helmet";
 
 // Initialize Express application
 const app: Express = express();
+
+// Apply basic Helmet security
+app.use(getHelmetConfig());
 
 // JSON parser
 app.use(express.json());
