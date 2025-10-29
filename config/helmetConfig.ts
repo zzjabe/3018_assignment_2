@@ -1,6 +1,6 @@
 import helmet from "helmet";
 
-const getHelmetConfig = () => {
+export const getHelmetConfig = () => {
     const isDevelopment = process.env.NODE_ENV === "development";
 
     if (isDevelopment) {
