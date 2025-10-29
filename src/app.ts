@@ -10,12 +10,16 @@ import routes from "./api/v1/routes/routes";
 import employeeRoutes from "./api/v1/routes/employeeRoutes"
 import branchRoutes from "./api/v1/routes/branchRoutes"
 import { getHelmetConfig } from "../config/helmetConfig";
+import { getCorsOptions } from "../config/corsConfig";
+import cors from "cors";
 
 // Initialize Express application
 const app: Express = express();
 
 // Apply basic Helmet security
 app.use(getHelmetConfig());
+
+app.use(cors(getCorsOptions()));
 
 // JSON parser
 app.use(express.json());
