@@ -12,6 +12,7 @@ import branchRoutes from "./api/v1/routes/branchRoutes"
 import { getHelmetConfig } from "../config/helmetConfig";
 import { getCorsOptions } from "../config/corsConfig";
 import cors from "cors";
+import setupSwagger from "../config/swagger";
 
 // Initialize Express application
 const app: Express = express();
@@ -33,6 +34,9 @@ app.use("/api/v1/routes", routes);
 app.use("/employees", employeeRoutes);
 
 app.use("/branches", branchRoutes);
+
+// Setup Swagger
+setupSwagger(app);
 
 // Health check endpoint
 app.get("/health", (req: Request, res: Response) => {

@@ -6,8 +6,11 @@ import { validate } from "../middlewares/validateMiddleware"
 const router = Router();
 
 router.get("/", employeeController.getAllEmployees);
+
 router.get("/byBranch", employeeController.getByBranch);
+
 router.get("/byDepartment", employeeController.getByDepartment);
+
 router.get("/:id", employeeController.getEmployee);
 
 router.post("/", validate(createEmployeeSchema), employeeController.createEmployee);
